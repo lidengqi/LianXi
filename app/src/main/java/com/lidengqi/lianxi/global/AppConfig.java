@@ -6,5 +6,5 @@ package com.lidengqi.lianxi.global;
 
 public class AppConfig {
 
-    public final static String ENDPOINT = "https://api.douban.com";
+    public static final String ENDPOINT = "https://api.douban.com";
 }

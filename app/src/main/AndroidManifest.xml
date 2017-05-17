@@ -40,6 +40,11 @@
             android:name=".ui.activity.PermissionsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+            android:name=".ui.activity.RxjavaRetrofitActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

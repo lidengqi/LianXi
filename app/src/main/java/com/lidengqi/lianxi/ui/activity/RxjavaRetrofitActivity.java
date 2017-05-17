@@ -5,11 +5,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lidengqi.lianxi.R;
 import com.lidengqi.lianxi.entity.MovieEntity;
+import com.lidengqi.lianxi.network.SubscriberOnNextListener;
 import com.lidengqi.lianxi.util.HttpMethods;
+import com.lidengqi.lianxi.util.ProgressSubscriber;
 
 import java.util.List;
 
@@ -32,12 +33,20 @@ public class RxjavaRetrofitActivity extends AppCompatActivity{
     TextView mResultTV;
 
     Subscriber<List<MovieEntity>> subscriber;
+    SubscriberOnNextListener subscriberOnNextListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rxjavaretrofit);
         ButterKnife.bind(this);
+
+        subscriberOnNextListener = new SubscriberOnNextListener<List<MovieEntity>>() {
+            @Override
+            public void onNext(List<MovieEntity> movieEntityList) {
+                mResultTV.setText(movieEntityList.toString());
+            }
+        };
     }
 
     @OnClick(R.id.bt_click)
@@ -47,22 +56,7 @@ public class RxjavaRetrofitActivity extends AppCompatActivity{
 
     //进行网络请求
     private void getMovie() {
-        subscriber = new Subscriber<List<MovieEntity>>() {
-            @Override
-            public void onCompleted() {
-                Toast.makeText(RxjavaRetrofitActivity.this, "Get Top Movie Completed", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                mResultTV.setText(e.getMessage());
-            }
-
-            @Override
-            public void onNext(List<MovieEntity> movieEntityList) {
-                mResultTV.setText(movieEntityList.toString());
-            }
-        };
+        subscriber = new ProgressSubscriber(subscriberOnNextListener, RxjavaRetrofitActivity.this);
         HttpMethods.getInstance().getTopMovie(subscriber, 0, 10);
     }
 }

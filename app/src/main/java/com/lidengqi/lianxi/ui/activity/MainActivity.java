@@ -15,6 +15,7 @@ import com.lidengqi.lianxi.R;
 import com.lidengqi.lianxi.util.PermissionsChecker;
 
 /**
+ * Android6.0之后版本动态权限申请Demo
  * Created by lidengqi on 2017/5/9.
  */
 public class MainActivity extends AppCompatActivity {

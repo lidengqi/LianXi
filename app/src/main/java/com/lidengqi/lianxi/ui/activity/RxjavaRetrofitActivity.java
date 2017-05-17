@@ -11,6 +11,8 @@ import com.lidengqi.lianxi.R;
 import com.lidengqi.lianxi.entity.MovieEntity;
 import com.lidengqi.lianxi.util.HttpMethods;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -29,7 +31,7 @@ public class RxjavaRetrofitActivity extends AppCompatActivity{
     @BindView(R.id.tv_result)
     TextView mResultTV;
 
-    Subscriber<MovieEntity> subscriber;
+    Subscriber<List<MovieEntity>> subscriber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class RxjavaRetrofitActivity extends AppCompatActivity{
 
     //进行网络请求
     private void getMovie() {
-        subscriber = new Subscriber<MovieEntity>() {
+        subscriber = new Subscriber<List<MovieEntity>>() {
             @Override
             public void onCompleted() {
                 Toast.makeText(RxjavaRetrofitActivity.this, "Get Top Movie Completed", Toast.LENGTH_SHORT).show();
@@ -57,8 +59,8 @@ public class RxjavaRetrofitActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onNext(MovieEntity movieEntity) {
-                mResultTV.setText(movieEntity.toString());
+            public void onNext(List<MovieEntity> movieEntityList) {
+                mResultTV.setText(movieEntityList.toString());
             }
         };
         HttpMethods.getInstance().getTopMovie(subscriber, 0, 10);

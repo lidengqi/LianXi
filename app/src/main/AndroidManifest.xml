@@ -56,6 +56,16 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".aidl.AdditionService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.lidengqi.lianxi.aidl.IAdditionService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

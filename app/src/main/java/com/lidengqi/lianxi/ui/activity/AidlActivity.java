@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,7 +21,6 @@ import com.lidengqi.lianxi.aidl.IAdditionService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by lidengqi on 2017/6/5.
@@ -47,20 +47,34 @@ public class AidlActivity extends AppCompatActivity {
         setContentView(R.layout.activity_aidl);
         ButterKnife.bind(this);
         initService();
+        initView();
     }
 
-    @OnClick(R.id.buttonCalc)
-    public void onClick() {
-        int v1, v2, res = -1;
-        v1 = Integer.parseInt(value1.getText().toString());
-        v2 = Integer.parseInt(value2.getText().toString());
-        try {
-            res = service.add(v1, v2);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        result.setText(Integer.valueOf(res).toString());
+    private void initView() {
+        buttonCalc = (Button)findViewById(R.id.buttonCalc);
+        result = (TextView)findViewById(R.id.result);
+        value1 = (EditText)findViewById(R.id.value1);
+        value2 = (EditText)findViewById(R.id.value2);
+
+        buttonCalc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int v1, v2, res = -1;
+                v1 = Integer.parseInt(value1.getText().toString());
+                v2 = Integer.parseInt(value2.getText().toString());
+                try {
+                    res = service.add(v1, v2);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                result.setText(Integer.valueOf(res).toString());
+            }
+        });
     }
+
+//    @OnClick(R.id.buttonCalc)
+//    public void onClick() {
+//    }
 
     @Override
     protected void onDestroy() {
@@ -91,8 +105,8 @@ public class AidlActivity extends AppCompatActivity {
      */
     private void initService() {
         connection = new AdditionServiceConnection();
-        Intent intent = new Intent();
-        intent.setClassName("com.lidengqi.lianxi.aidl", AdditionService.class.getName());
+        Intent intent = new Intent(this, AdditionService.class);
+//        intent.setClassName("com.lidengqi.lianxi.aidl", AdditionService.class.getName());
         boolean ret = bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 

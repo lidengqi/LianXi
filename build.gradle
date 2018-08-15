@@ -23,3 +23,88 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+//task hello << {
+//    println 'Hello World!'
+//}
+//
+//task upper << {
+//    String someString = 'mY_nAmE'
+//    println 'Original: ' + someString
+//    println 'Upper case: ' + someString.toUpperCase()
+//}
+//
+//task count << {
+//    4.times { print "$it " }
+//}
+//
+//task intro(dependsOn : hello) << {
+//    println 'I am Gradle.'
+//}
+//
+//4.times { counter ->
+//    task "task$counter" << {
+//        println "I am task number $counter."
+//    }
+//}
+//task3.dependsOn task0, task1, task2
+//
+//hello.doFirst {
+//    println 'Hello First'
+//}
+//hello.doLast {
+//    println 'Hello Last'
+//}
+//hello << {
+//    println 'Hello ...'
+//}
+//
+//task myTask {
+//    ext.myProperty = 'myValue'
+//}
+//task print << {
+//    println myTask.myProperty
+//}
+//
+//task loadfile << {
+//    def files = file('test').listFiles().sort()
+//    files.each { File file ->
+//        if (file.isFile()) {
+//            ant.loadfile(srcFile: file, property: file.name)
+//            println " *** $file.name *** "
+//            println "${ant.properties[file.name]}"
+//        }
+//    }
+//}
+//
+//task checksum << {
+//    fileList('test').each {File file ->
+//        ant.checksum(file: file, property: file.name)
+//        println "$file.name Checksum: ${ant.properties[file.name]}"
+//    }
+//}
+//task loadFile << {
+//    fileList('test').each {File file ->
+//        ant.loadfile(srcFile: file, property: file.name)
+//        println "I am font of $file.name"
+//    }
+//}
+//File[] fileList(String dir) {
+//    file(dir).listFiles({file -> file.isFile()} as FileFilter).sort()
+//}
+//
+//defaultTasks 'hello', 'intro', 'task3'
+//
+//task distribution << {
+//    println "We build the zip with version=$version"
+//}
+//task release(dependsOn: 'distribution') << {
+//    println 'We release now'
+//}
+//gradle.taskGraph.whenReady {taskGraph ->
+//    if (taskGraph.hasTask(release)) {
+//        version = '1.0'
+//    } else {
+//        version = '1.0-SNAPSHOT'
+//    }
+//}

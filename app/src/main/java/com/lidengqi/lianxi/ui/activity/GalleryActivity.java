@@ -17,8 +17,8 @@ import com.lidengqi.lianxi.util.DisplayUtils;
 import com.lidengqi.lianxi.util.GPUImageFilterTools;
 import com.lidengqi.lianxi.util.RecycleSpacesItemDecoration;
 
+import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 import jp.co.cyberagent.android.gpuimage.GPUImageView;
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter;
 
 /**
  * 在此添加[类的功能描述]

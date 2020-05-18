@@ -22,7 +22,7 @@ import android.graphics.BitmapFactory
 import android.graphics.PointF
 import android.opengl.Matrix
 import com.lidengqi.lianxi.R
-import jp.co.cyberagent.android.gpuimage.filter.*
+import jp.co.cyberagent.android.gpuimage.*
 import java.util.*
 
 object GPUImageFilterTools {
@@ -49,11 +49,8 @@ object GPUImageFilterTools {
             addFilter("Hue", FilterType.HUE)
             addFilter("Gamma", FilterType.GAMMA)
             addFilter("Brightness", FilterType.BRIGHTNESS)
-            addFilter("Sepia", FilterType.SEPIA)
             addFilter("Grayscale", FilterType.GRAYSCALE)
             addFilter("Sharpness", FilterType.SHARPEN)
-            addFilter("Sobel Edge Detection", FilterType.SOBEL_EDGE_DETECTION)
-            addFilter("Threshold Edge Detection", FilterType.THRESHOLD_EDGE_DETECTION)
             addFilter("3x3 Convolution", FilterType.THREE_X_THREE_CONVOLUTION)
             addFilter("Emboss", FilterType.EMBOSS)
             addFilter("Posterize", FilterType.POSTERIZE)
@@ -67,9 +64,6 @@ object GPUImageFilterTools {
             addFilter("White Balance", FilterType.WHITE_BALANCE)
             addFilter("Vignette", FilterType.VIGNETTE)
             addFilter("ToneCurve", FilterType.TONE_CURVE)
-
-            addFilter("Luminance", FilterType.LUMINANCE)
-            addFilter("Luminance Threshold", FilterType.LUMINANCE_THRESHSOLD)
 
             addFilter("Blend (Difference)", FilterType.BLEND_DIFFERENCE)
             addFilter("Blend (Source Over)", FilterType.BLEND_SOURCE_OVER)
@@ -124,15 +118,9 @@ object GPUImageFilterTools {
 
             addFilter("Levels Min (Mid Adjust)", FilterType.LEVELS_FILTER_MIN)
 
-            addFilter("Bilateral Blur", FilterType.BILATERAL_BLUR)
-
-            addFilter("Zoom Blur", FilterType.ZOOM_BLUR)
 
             addFilter("Transform (2-D)", FilterType.TRANSFORM2D)
 
-            addFilter("Solarize", FilterType.SOLARIZE)
-
-            addFilter("Vibrance", FilterType.VIBRANCE)
         }
         return filters
     }
@@ -147,10 +135,7 @@ object GPUImageFilterTools {
             FilterType.HUE -> GPUImageHueFilter(90.0f)
             FilterType.BRIGHTNESS -> GPUImageBrightnessFilter(1.5f)
             FilterType.GRAYSCALE -> GPUImageGrayscaleFilter()
-            FilterType.SEPIA -> GPUImageSepiaToneFilter()
             FilterType.SHARPEN -> GPUImageSharpenFilter()
-            FilterType.SOBEL_EDGE_DETECTION -> GPUImageSobelEdgeDetectionFilter()
-            FilterType.THRESHOLD_EDGE_DETECTION -> GPUImageThresholdEdgeDetectionFilter()
             FilterType.THREE_X_THREE_CONVOLUTION -> GPUImage3x3ConvolutionFilter()
             FilterType.EMBOSS -> GPUImageEmbossFilter()
             FilterType.POSTERIZE -> GPUImagePosterizeFilter()
@@ -185,8 +170,6 @@ object GPUImageFilterTools {
             FilterType.TONE_CURVE -> GPUImageToneCurveFilter().apply {
                 setFromCurveFileInputStream(context.resources.openRawResource(R.raw.tone_cuver_sample))
             }
-            FilterType.LUMINANCE -> GPUImageLuminanceFilter()
-            FilterType.LUMINANCE_THRESHSOLD -> GPUImageLuminanceThresholdFilter(0.5f)
             FilterType.BLEND_DIFFERENCE -> createBlendFilter(
                 context,
                 GPUImageDifferenceBlendFilter::class.java
@@ -310,11 +293,7 @@ object GPUImageFilterTools {
             FilterType.COLOR_BALANCE -> GPUImageColorBalanceFilter()
             FilterType.LEVELS_FILTER_MIN -> GPUImageLevelsFilter()
             FilterType.HALFTONE -> GPUImageHalftoneFilter()
-            FilterType.BILATERAL_BLUR -> GPUImageBilateralBlurFilter()
-            FilterType.ZOOM_BLUR -> GPUImageZoomBlurFilter()
             FilterType.TRANSFORM2D -> GPUImageTransformFilter()
-            FilterType.SOLARIZE -> GPUImageSolarizeFilter()
-            FilterType.VIBRANCE -> GPUImageVibranceFilter()
         }
     }
 
@@ -333,12 +312,12 @@ object GPUImageFilterTools {
     }
 
     enum class FilterType {
-        CONTRAST, GRAYSCALE, SHARPEN, SEPIA, SOBEL_EDGE_DETECTION, THRESHOLD_EDGE_DETECTION, THREE_X_THREE_CONVOLUTION, FILTER_GROUP, EMBOSS, POSTERIZE, GAMMA, BRIGHTNESS, INVERT, HUE, PIXELATION,
-        SATURATION, EXPOSURE, HIGHLIGHT_SHADOW, MONOCHROME, OPACITY, RGB, WHITE_BALANCE, VIGNETTE, TONE_CURVE, LUMINANCE, LUMINANCE_THRESHSOLD, BLEND_COLOR_BURN, BLEND_COLOR_DODGE, BLEND_DARKEN,
+        CONTRAST, GRAYSCALE, SHARPEN, THREE_X_THREE_CONVOLUTION, FILTER_GROUP, EMBOSS, POSTERIZE, GAMMA, BRIGHTNESS, INVERT, HUE, PIXELATION,
+        SATURATION, EXPOSURE, HIGHLIGHT_SHADOW, MONOCHROME, OPACITY, RGB, WHITE_BALANCE, VIGNETTE, TONE_CURVE, BLEND_COLOR_BURN, BLEND_COLOR_DODGE, BLEND_DARKEN,
         BLEND_DIFFERENCE, BLEND_DISSOLVE, BLEND_EXCLUSION, BLEND_SOURCE_OVER, BLEND_HARD_LIGHT, BLEND_LIGHTEN, BLEND_ADD, BLEND_DIVIDE, BLEND_MULTIPLY, BLEND_OVERLAY, BLEND_SCREEN, BLEND_ALPHA,
         BLEND_COLOR, BLEND_HUE, BLEND_SATURATION, BLEND_LUMINOSITY, BLEND_LINEAR_BURN, BLEND_SOFT_LIGHT, BLEND_SUBTRACT, BLEND_CHROMA_KEY, BLEND_NORMAL, LOOKUP_AMATORKA,
         GAUSSIAN_BLUR, CROSSHATCH, BOX_BLUR, CGA_COLORSPACE, DILATION, KUWAHARA, RGB_DILATION, SKETCH, TOON, SMOOTH_TOON, BULGE_DISTORTION, GLASS_SPHERE, HAZE, LAPLACIAN, NON_MAXIMUM_SUPPRESSION,
-        SPHERE_REFRACTION, SWIRL, WEAK_PIXEL_INCLUSION, FALSE_COLOR, COLOR_BALANCE, LEVELS_FILTER_MIN, BILATERAL_BLUR, ZOOM_BLUR, HALFTONE, TRANSFORM2D, SOLARIZE, VIBRANCE
+        SPHERE_REFRACTION, SWIRL, WEAK_PIXEL_INCLUSION, FALSE_COLOR, COLOR_BALANCE, LEVELS_FILTER_MIN, HALFTONE, TRANSFORM2D
     }
 
     class FilterList {
@@ -357,12 +336,9 @@ object GPUImageFilterTools {
         init {
             adjuster = when (filter) {
                 is GPUImageSharpenFilter -> SharpnessAdjuster(filter)
-                is GPUImageSepiaToneFilter -> SepiaAdjuster(filter)
                 is GPUImageContrastFilter -> ContrastAdjuster(filter)
                 is GPUImageGammaFilter -> GammaAdjuster(filter)
                 is GPUImageBrightnessFilter -> BrightnessAdjuster(filter)
-                is GPUImageSobelEdgeDetectionFilter -> SobelAdjuster(filter)
-                is GPUImageThresholdEdgeDetectionFilter -> ThresholdAdjuster(filter)
                 is GPUImage3x3ConvolutionFilter -> ThreeXThreeConvolutionAjuster(filter)
                 is GPUImageEmbossFilter -> EmbossAdjuster(filter)
                 is GPUImage3x3TextureSamplingFilter -> GPU3x3TextureAdjuster(filter)
@@ -377,7 +353,6 @@ object GPUImageFilterTools {
                 is GPUImageRGBFilter -> RGBAdjuster(filter)
                 is GPUImageWhiteBalanceFilter -> WhiteBalanceAdjuster(filter)
                 is GPUImageVignetteFilter -> VignetteAdjuster(filter)
-                is GPUImageLuminanceThresholdFilter -> LuminanceThresholdAdjuster(filter)
                 is GPUImageDissolveBlendFilter -> DissolveBlendAdjuster(filter)
                 is GPUImageGaussianBlurFilter -> GaussianBlurAdjuster(filter)
                 is GPUImageCrosshatchFilter -> CrosshatchBlurAdjuster(filter)
@@ -388,10 +363,7 @@ object GPUImageFilterTools {
                 is GPUImageSwirlFilter -> SwirlAdjuster(filter)
                 is GPUImageColorBalanceFilter -> ColorBalanceAdjuster(filter)
                 is GPUImageLevelsFilter -> LevelsMinMidAdjuster(filter)
-                is GPUImageBilateralBlurFilter -> BilateralAdjuster(filter)
                 is GPUImageTransformFilter -> RotateAdjuster(filter)
-                is GPUImageSolarizeFilter -> SolarizeAdjuster(filter)
-                is GPUImageVibranceFilter -> VibranceAdjuster(filter)
                 else -> null
             }
         }
@@ -456,28 +428,6 @@ object GPUImageFilterTools {
             Adjuster<GPUImageBrightnessFilter>(filter) {
             override fun adjust(percentage: Int) {
                 filter.setBrightness(range(percentage, -1.0f, 1.0f))
-            }
-        }
-
-        private inner class SepiaAdjuster(filter: GPUImageSepiaToneFilter) :
-            Adjuster<GPUImageSepiaToneFilter>(filter) {
-            override fun adjust(percentage: Int) {
-                filter.setIntensity(range(percentage, 0.0f, 2.0f))
-            }
-        }
-
-        private inner class SobelAdjuster(filter: GPUImageSobelEdgeDetectionFilter) :
-            Adjuster<GPUImageSobelEdgeDetectionFilter>(filter) {
-            override fun adjust(percentage: Int) {
-                filter.setLineSize(range(percentage, 0.0f, 5.0f))
-            }
-        }
-
-        private inner class ThresholdAdjuster(filter: GPUImageThresholdEdgeDetectionFilter) :
-            Adjuster<GPUImageThresholdEdgeDetectionFilter>(filter) {
-            override fun adjust(percentage: Int) {
-                filter.setLineSize(range(percentage, 0.0f, 5.0f))
-                filter.setThreshold(0.9f)
             }
         }
 
@@ -569,13 +519,6 @@ object GPUImageFilterTools {
             }
         }
 
-        private inner class LuminanceThresholdAdjuster(filter: GPUImageLuminanceThresholdFilter) :
-            Adjuster<GPUImageLuminanceThresholdFilter>(filter) {
-            override fun adjust(percentage: Int) {
-                filter.setThreshold(range(percentage, 0.0f, 1.0f))
-            }
-        }
-
         private inner class DissolveBlendAdjuster(filter: GPUImageDissolveBlendFilter) :
             Adjuster<GPUImageDissolveBlendFilter>(filter) {
             override fun adjust(percentage: Int) {
@@ -655,33 +598,12 @@ object GPUImageFilterTools {
             }
         }
 
-        private inner class BilateralAdjuster(filter: GPUImageBilateralBlurFilter) :
-            Adjuster<GPUImageBilateralBlurFilter>(filter) {
-            override fun adjust(percentage: Int) {
-                filter.setDistanceNormalizationFactor(range(percentage, 0.0f, 15.0f))
-            }
-        }
-
         private inner class RotateAdjuster(filter: GPUImageTransformFilter) :
             Adjuster<GPUImageTransformFilter>(filter) {
             override fun adjust(percentage: Int) {
                 val transform = FloatArray(16)
                 Matrix.setRotateM(transform, 0, (360 * percentage / 100).toFloat(), 0f, 0f, 1.0f)
                 filter.transform3D = transform
-            }
-        }
-
-        private inner class SolarizeAdjuster(filter: GPUImageSolarizeFilter) :
-            Adjuster<GPUImageSolarizeFilter>(filter) {
-            override fun adjust(percentage: Int) {
-                filter.setThreshold(range(percentage, 0.0f, 1.0f))
-            }
-        }
-
-        private inner class VibranceAdjuster(filter: GPUImageVibranceFilter) :
-            Adjuster<GPUImageVibranceFilter>(filter) {
-            override fun adjust(percentage: Int) {
-                filter.setVibrance(range(percentage, -1.2f, 1.2f))
             }
         }
     }
